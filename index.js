@@ -1,16 +1,22 @@
-import {getHTML, getTwitterFollowers, getInstaggramFollowers} from "./app/scraper";
+import {getHTML,
+        getInstagramCount,
+        getTwitterCount}
+        from "./app/scraper";
 
-async function go() {
-        const iPromise = await getHTML('https://www.instagram.com/farisdx66');
-        const tPromise = await getHTML('https://www.twitter.com/farisdx66');
-        const [instagramHTML, twitterHTML] = await Promise.all(
-            [iPromise,tPromise]
-        );
-        const twitter = await getTwitterFollowers(twitterHTML);
-        const instagram = await getInstaggramFollowers(instagramHTML);
-        console.log(`twitter follower ${twitter} and instagram follower ${instagram}`)
-}
+import express from 'express';
 
-go();
+const app = express();
 
+app.get('/scrape' , async (req, res, next) => {
+        console.log('running')
+        const [iCount, tCount] = await Promise.all([
+                getInstagramCount(),getTwitterCount()
+        ]);
+        console.log(iCount,tCount)
+        res.json({iCount, tCount})
+});
+
+app.listen(4000, () => {
+        console.log('running')
+})
 

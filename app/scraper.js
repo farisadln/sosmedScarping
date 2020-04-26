@@ -1,18 +1,18 @@
 import axios from 'axios';
 import cheerio from 'cheerio';
 
-async function getHTML(url) {
+export async function getHTML(url) {
         const {data : html} = await axios.get(url);
         return html;
 }
 
-async function getTwitterFollowers(html) {
+export async function getTwitterFollowers(html) {
         const $ = cheerio.load(html);
         const span = $('[data-nav="followers"] .ProfileNav-value');
         return  span.data('count');
 }
 
-async function getInstaggramFollowers(html) {
+export async function getInstaggramFollowers(html) {
         const $ = cheerio.load(html);
         const dataInString = $('script[type="application/ld+json"]').html();
         const pageObject = JSON.parse(dataInString);
@@ -22,4 +22,15 @@ async function getInstaggramFollowers(html) {
         );
 }
 
-export { getHTML, getTwitterFollowers, getInstaggramFollowers };
+export async function getInstagramCount() {
+        const html = await getHTML('https://instagram.com/farisdx66');
+        const instagramCount = await getInstaggramFollowers(html);
+        return instagramCount;
+}
+
+export async function getTwitterCount() {
+        const html = await getHTML('https://twitter.com/farisdx66');
+        const twitterCount = await getTwitterFollowers(html);
+        return twitterCount;
+}
+
